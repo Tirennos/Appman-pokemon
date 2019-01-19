@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-import cardList from './mock/cards.json';
-import filter from 'lodash/filter';
 import './index.css';
-import { Card, CardImg, CardText, CardBody,
-    CardTitle, CardSubtitle } from 'reactstrap';
-import TableCardPokemon from './Component/TableCardPokemon';
-// var nocache = require('nocache');
-// nocache()
-
+import './Component/css/TableCardPokemon.css';
+import SearchCardPokemon from './Component/SearchCardPokemon';
+import MyList from './Component/MyList';
 
 const COLORS = {
   Psychic: "#f8a5c2",
@@ -26,69 +21,59 @@ const COLORS = {
 
 class App extends Component {
 
+
     constructor() {
         super();
         this.state  = {
-            dataList: [],
-            dataSearch: ''
+            isSelectCard: true,
+            isMyList: false,
+            myPokedexList: [],
+            selectedCardList: []
         };
     }
 
-    componentWillMount() {
-        this.setState({dataList: cardList.cards});
-    }
-
-    componentWillReceiveProps(nextProps) {
-      console.log('nextProps:', nextProps);
-    }
-
-    onSearch = () => {
-      const { dataSearch, dataList } = this.state;
-      let objFilter = filter(dataList, (item) => {
-          return item.name.indexOf(dataSearch)>-1;
+    onClickMyCardList = (data) => {
+        this.setState({
+            myPokedexList: data,
+            selectedCardList: [...this.state.selectedCardList, data[data.length - 1]],
         });
-      if (dataSearch.length > 0) {
-          this.setState({dataList: objFilter});
-      } else {
-          this.setState({dataList: cardList.cards});
-      }
-      console.log('objFilter:', objFilter);
     }
 
-  render() {
-    const { dataList } = this.state;
-      return (
-      <div className="App">
-          <div className="col-md-12">
-              <div className="row no-gutters">
-                  <div className="col">
-                      <input
-                          className="form-control border-secondary border-right-0 rounded-0"
-                          style={{marginTop: '10px'}}
-                          type="search"
-                          placeholder="Find Pokemon"
-                          name="search_card"
-                          onChange={(e) => this.setState({dataSearch: e.target.value})}>
-                      </input>
-                  </div>
-                  <div className="col-auto">
-                      <button
-                          style={{marginTop: '10px'}}
-                          className="btn btn-outline-secondary border-left-0 rounded-0 rounded-right"
-                          type="button"
-                          onClick={() => this.onSearch()}>
-                          <i className="fa fa-search">{''}</i>
-                      </button>
-                  </div>
-              </div>
+    onClickRemoveCard = (data) => {
+        const { selectedCardList } = this.state;
+        let objList = selectedCardList;
+        selectedCardList.map((data1, key) => {
+            if (data1 === data){
+                objList.splice(key, 1);
+            }
+        })
+        this.setState({selectedCardList: objList, myPokedexList: objList})
+    }
 
-              <TableCardPokemon
-                  dataList={dataList}
-              />
-          </div>
-        </div>
-    )
-  }
+    render() {
+        const { isSelectCard, isMyList, myPokedexList, selectedCardList } = this.state;
+        return(
+            <div>
+                <div>
+                    <button className="btn btn-primary" onClick={() => this.setState({isSelectCard: true, isMyList: false})}>Select Card</button>
+                    <button className="btn btn-warning" onClick={() => this.setState({isSelectCard: false, isMyList: true})}>My List</button>
+                </div>
+                {isSelectCard &&
+                     <SearchCardPokemon
+                         onClickMyCardList={(data) => this.onClickMyCardList(data)}
+                         myPokedexList={myPokedexList}
+                     />
+                }
+                {isMyList &&
+                    <MyList
+                        myPokedexList={selectedCardList}
+                        colors={COLORS}
+                        onClickRemoveCard={(data) => this.onClickRemoveCard(data)}
+                    />
+                }
+            </div>
+        )
+    }
 }
 
 export default App

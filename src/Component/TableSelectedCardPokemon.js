@@ -38,15 +38,16 @@ class TableCardPokemon extends Component {
 
     }
 
+
     render() {
         const dataList = this.props;
-        const { colors, onClickAddCard } = this.props;
+        const { colors, onClickRemoveCard } = this.props;
         const { happiness } = this.state;
         let imgName = [];
         for (let i = 0; i < 4; i++)
         { imgName.push(<img style={{height: '20px'}} src={cute}></img>)}
         return(
-            <div style={{overflow: 'auto', height: '620px'}}>
+            <div style={{overflow: 'auto', height: '600px'}}>
                 <br></br>
             <table border='0' >
                 <thead>
@@ -63,25 +64,27 @@ class TableCardPokemon extends Component {
                                     <img  style={{height: '200px'}} src={data.imageUrlHiRes}/>
                                 </td>
                                 <td style={{verticalAlign: '-webkit-baseline-middle', width: '300px'}} >
-                                    <div>{data.name}</div><br />
+                                    <div>{data.name}</div>
                                     <div className="progress">
                                         <div className="progress-bar bg-danger" style={{width: (data.hp >= 100 ? 100 : data.hp)}}>{'HP'}&#xa;</div>
-                                    </div><br />
+                                    </div>
                                     <div className="progress">
                                         <div className="progress-bar bg-danger" style={{width: (data.convertedRetreatCost * 50 >= 100 ? 100 : data.convertedRetreatCost * 50)}}> {'STR'}</div>
-                                    </div><br />
+                                    </div>
                                     <div hidden={true}>WEAK {Object.prototype.hasOwnProperty.call(data, 'weaknesses') ? `${data.weaknesses[0].type}  ${data.weaknesses[0].value}` : '0'} </div>
                                     <div className="progress">
                                         <div className="progress-bar bg-danger" style={{width: (data.convertedRetreatCost * 100 >= 100 ? 100 : data.convertedRetreatCost * 100)}}>{'WEAK'}</div>
-                                    </div><br />
+                                    </div>
+
                                     {/*<img style={{height: '20px'}} src={cute}></img>*/}
                                     {imgName}
                                 </td>
                                 <td style={{verticalAlign: '-webkit-baseline-middle', textAlign: 'right', width: '550px'}} colSpan={2}>
                                     <div
                                         style={{cursor: 'pointer', color: colors.Fairy}}
-                                        onClick={() => onClickAddCard(data.id)}>
-                                        {'Add'}
+                                        onClick={() => onClickRemoveCard(data.id)}
+                                    >
+                                        {'X'}
                                     </div>
                                 </td>
                             </tr>
@@ -105,7 +108,7 @@ TableCardPokemon.defaultValue = {
 TableCardPokemon.propTypes = {
     dataList: PropTypes.array,
     colors: PropTypes.object,
-    onClickAddCard: PropTypes.func.isRequired
+    onClickRemoveCard: PropTypes.func.isRequired
 }
 
 
